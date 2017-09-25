@@ -70,7 +70,10 @@ class I18n {
         if (!this.translations[locale])
             this.translations[locale] = {};
 
-        merge.recursive(this.translations[locale], await this._app.constructor._require(filename));
+        let translation = await this._app.constructor._require(filename);
+        if (!translation)
+            throw new Error(`Could not load translations from ${filename}`);
+        merge.recursive(this.translations[locale], translation);
     }
 
     /**
@@ -89,7 +92,7 @@ class I18n {
             formatter = require('format-message');
             formatter.setup({
                 locale: locale,
-                translations: this.translations[locale],
+                translations: this.translations,
             });
             this.formatters.set(locale, formatter);
         }

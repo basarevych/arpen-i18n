@@ -1,6 +1,6 @@
 /**
- * Express I18N middleware
- * @module i18n/middleware/express
+ * Telegram I18N middleware
+ * @module i18n/middleware/telegram
  */
 const fs = require('fs');
 const path = require('path');
@@ -8,7 +8,7 @@ const path = require('path');
 /**
  * Internationalization
  */
-class ExpressI18n {
+class TelegramI18n {
     /**
      * Create the service
      * @param {object} config           Configuration
@@ -20,11 +20,11 @@ class ExpressI18n {
     }
 
     /**
-     * Service name is 'express.i18n'
+     * Service name is 'telegram.i18n'
      * @type {string}
      */
     static get provides() {
-        return 'express.i18n';
+        return 'telegram.i18n';
     }
 
     /**
@@ -37,7 +37,7 @@ class ExpressI18n {
 
     /**
      * Register middleware
-     * @param {Express} server          The server
+     * @param {Telegram} server          The server
      * @return {Promise}
      */
     async register(server) {
@@ -56,20 +56,13 @@ class ExpressI18n {
             }
         }
 
-        server.express.use((req, res, next) => {
-            res.locals.locale = null;
-            if (Object.keys(this._i18n.translations).length) {
-                if (req.cookies)
-                    res.locals.locale = Object.keys(this._i18n.translations).includes(req.cookies.locale) ? req.cookies.locale : null;
-                if (!res.locals.locale)
-                    res.locals.locale = req.acceptsLanguages(Object.keys(this._i18n.translations));
-            }
-            if (!res.locals.locale)
-                res.locals.locale = this._i18n.defaultLocale;
+        server.bot.use(async (ctx, next) => {
+            if (!ctx.session.locale)
+                ctx.session.locale = this._i18n.defaultLocale;
 
-            res.locals.i18n = (id, ...args) => {
+            ctx.i18n = (id, ...args) => {
                 let options = {};
-                let locale = res.locals.locale;
+                let locale = ctx.session.locale;
                 if (args.length >= 2) {
                     options = args[0];
                     locale = args[1];
@@ -82,9 +75,9 @@ class ExpressI18n {
                 return this._i18n.translate(locale, id, options);
             };
 
-            next();
+            return next(ctx);
         });
     }
 }
 
-module.exports = ExpressI18n;
+module.exports = TelegramI18n;
