@@ -1,6 +1,6 @@
 {
   "name": "arpen-i18n",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "license": "MIT",
   "author": "Ross Basarevych <basarevych@gmail.com>",
   "description": "ARPEN",
@@ -11,7 +11,9 @@
   "dependencies": {
     "debug": "~3.0.1",
     "nerror": "~1.0.0",
-    "merge": "~1.2.0",
+    "merge": "~1.2.0"
+  },
+  "peerDependencies": {
     "format-message": "~5.2.0"
   },
   "devDependencies": {
