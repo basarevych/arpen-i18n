@@ -41,7 +41,7 @@ class TelegramI18n {
      * @return {Promise}
      */
     async register(server) {
-        for (let [ moduleName, moduleConfig ] of this._config.modules) {
+        for (let moduleConfig of this._config.modules.values()) {
             for (let dir of moduleConfig.i18n || []) {
                 let filename = (dir[0] === '/') ? dir : path.join(moduleConfig.base_path, dir);
                 for (let file of fs.readdirSync(filename)) {

@@ -2,8 +2,6 @@
  * I18N service
  * @module i18n/services/i18n
  */
-const fs = require('fs');
-const path = require('path');
 const merge = require('merge');
 
 /**
@@ -51,7 +49,7 @@ class I18n {
      * @param {string} locale
      */
     set defaultLocale(locale) {
-        return this._defaultLocale = locale;
+        this._defaultLocale = locale;
     }
 
     /**
