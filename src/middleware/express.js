@@ -43,10 +43,7 @@ class ExpressI18n {
     async register(server) {
         for (let [ moduleName, moduleConfig ] of this._config.modules) {
             for (let dir of moduleConfig.i18n || []) {
-                let filename = dir[0] === '/'
-                    ? dir
-                    : path.join(this._config.base_path, 'modules', moduleName, dir);
-
+                let filename = (dir[0] === '/') ? dir : path.join(moduleConfig.base_path, dir);
                 for (let file of fs.readdirSync(filename)) {
                     if (!file.endsWith('.json'))
                         continue;
@@ -69,7 +66,7 @@ class ExpressI18n {
 
             res.locals.i18n = (id, ...args) => {
                 let options = {};
-                let locale = res.locals.locale;
+                let locale = res.locals.locale || this._i18n.defaultLocale;
                 if (args.length >= 2) {
                     options = args[0];
                     locale = args[1];
