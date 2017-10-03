@@ -71,6 +71,10 @@ class I18n {
         let translation = await this._app.constructor._require(filename);
         if (!translation)
             throw new Error(`Could not load translations from ${filename}`);
+        for (let key of Object.keys(translation)) {
+            if (Array.isArray(translation[key].message))
+                translation[key].message = translation[key].message.join('');
+        }
         merge.recursive(this.translations[locale], translation);
     }
 
@@ -95,7 +99,11 @@ class I18n {
             this.formatters.set(locale, formatter);
         }
 
-        return formatter(id, options);
+        try {
+            return formatter(id, options);
+        } catch (error) {
+            throw new Error(error.message);
+        }
     }
 }
 
